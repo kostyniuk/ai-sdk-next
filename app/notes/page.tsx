@@ -1,8 +1,10 @@
+import { db } from '@/db';
+import { notesTable } from '@/db/schema';
 import { createClient } from '@/utils/supabase/server';
 
 export default async function Notes() {
     const supabase = await createClient();
-    const { data: notes } = await supabase.from("notes").select();
+    const notes = await db.select().from(notesTable);
 
-    return <pre>{JSON.stringify(notes, null, 2)}</pre>
+    return <pre> Notes: {JSON.stringify(notes, null, 2)}</pre>
 }
