@@ -9,8 +9,10 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@ai-sdk/google": "^2.0.44",
     "@supabase/ssr": "^0.7.0",
     "@supabase/supabase-js": "^2.58.0",
+    "ai": "^5.0.104",
     "dotenv": "^17.2.3",
     "drizzle-orm": "^0.44.7",
     "next": "16.0.6",
