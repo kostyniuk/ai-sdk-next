@@ -15,6 +15,20 @@
       "when": 1764525888491,
       "tag": "0001_overjoyed_quentin_quire",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1764621059279,
+      "tag": "0002_fair_thor",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1764621578157,
+      "tag": "0003_icy_lady_bullseye",
+      "breakpoints": true
     }
   ]
 }

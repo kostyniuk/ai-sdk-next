@@ -1,0 +1,1 @@
+ALTER TABLE "quotation_form_formula" ALTER COLUMN "updated_at" SET DEFAULT now();
