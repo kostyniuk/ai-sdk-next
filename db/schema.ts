@@ -76,3 +76,15 @@ export type SelectPost = typeof postsTable.$inferSelect;
 
 export type InsertNote = typeof notesTable.$inferInsert;
 export type SelectNote = typeof notesTable.$inferSelect;
+
+export type InsertMaterial = typeof material.$inferInsert;
+export type SelectMaterial = typeof material.$inferSelect;
+
+export type InsertMachineGroup = typeof machineGroup.$inferInsert;
+export type SelectMachineGroup = typeof machineGroup.$inferSelect;
+
+export type InsertQuotationForm = typeof quotationForm.$inferInsert;
+export type SelectQuotationForm = typeof quotationForm.$inferSelect;
+
+export type InsertQuotationFormOption = typeof quotationFormOption.$inferInsert;
+export type SelectQuotationFormOption = typeof quotationFormOption.$inferSelect;

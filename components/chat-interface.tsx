@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Send, Bot } from 'lucide-react';
+import { Send, Bot, Wrench, CheckCircle2, Loader2 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
 export function ChatInterface() {
@@ -15,7 +15,8 @@ export function ChatInterface() {
 
     useEffect(() => {
         if (scrollAreaRef.current) {
-            const scrollContainer = scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]');
+            const scrollContainer = scrollAreaRef.current.querySelector('[data-slot="scroll-area-viewport"]') ||
+                scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]');
             if (scrollContainer) {
                 scrollContainer.scrollTop = scrollContainer.scrollHeight;
             }
@@ -35,9 +36,9 @@ export function ChatInterface() {
 
     return (
         <div className="flex flex-col h-full relative">
-            <div className="flex-1 flex flex-col max-w-4xl mx-auto w-full px-6 py-8 relative z-10 h-full">
+            <div className="flex-1 flex flex-col max-w-4xl mx-auto w-full px-6 py-8 relative z-10 min-h-0">
                 {/* Header Section */}
-                <header className="text-center mb-12 space-y-4">
+                <header className="text-center mb-12 space-y-4 flex-shrink-0">
                     <h1 className="text-5xl md:text-6xl font-bold tracking-tight text-foreground">
                         AI Assistant
                     </h1>
@@ -47,8 +48,8 @@ export function ChatInterface() {
                 </header>
 
                 {/* Chat Area */}
-                <div className="flex-1 flex flex-col min-h-0">
-                    <ScrollArea ref={scrollAreaRef} className="flex-1">
+                <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
+                    <ScrollArea ref={scrollAreaRef} className="flex-1 min-h-0">
                         <div className="space-y-6 pb-8">
                             {messages.length === 0 && (
                                 <div className="flex flex-col items-center justify-center py-16 text-center space-y-8">
@@ -99,16 +100,78 @@ export function ChatInterface() {
                                             }`}
                                     >
                                         {message.parts.map((part, i) => {
-                                            switch (part.type) {
-                                                case 'text':
+                                            // Handle text parts
+                                            if (part.type === 'text') {
+                                                return (
+                                                    <div key={`${message.id}-${i}`} className="whitespace-pre-wrap font-light">
+                                                        {part.text}
+                                                    </div>
+                                                );
+                                            }
+
+                                            // Handle tool call parts (type starts with "tool-")
+                                            if (part.type.startsWith('tool-')) {
+                                                const toolName = part.type.replace('tool-', '');
+                                                const isToolCall = 'input' in part && part.input !== undefined;
+                                                const isToolResult = 'output' in part && part.output !== undefined;
+
+                                                // Tool call (when tool is being invoked)
+                                                if (isToolCall) {
                                                     return (
-                                                        <div key={`${message.id}-${i}`} className="whitespace-pre-wrap font-light">
-                                                            {part.text}
+                                                        <div
+                                                            key={`${message.id}-${i}`}
+                                                            className="my-2 p-4 rounded-lg bg-blue-500/20 border-2 border-blue-500/50 backdrop-blur-sm shadow-md"
+                                                        >
+                                                            <div className="flex items-center gap-2 mb-2">
+                                                                <Wrench className="w-4 h-4 text-blue-400" />
+                                                                <span className="font-semibold text-blue-300">Calling tool:</span>
+                                                                <span className="font-bold text-blue-200">{toolName}</span>
+                                                                {'state' in part && part.state === 'input-streaming' && (
+                                                                    <Loader2 className="w-3 h-3 text-blue-400 animate-spin ml-1" />
+                                                                )}
+                                                            </div>
+                                                            {'input' in part && part.input !== undefined && (
+                                                                <div className="mt-2 pt-2 border-t border-blue-500/30">
+                                                                    <div className="text-xs text-blue-200/80 font-mono bg-blue-950/30 p-2 rounded overflow-x-auto">
+                                                                        {typeof part.input === 'string'
+                                                                            ? part.input
+                                                                            : JSON.stringify(part.input, null, 2)
+                                                                        }
+                                                                    </div>
+                                                                </div>
+                                                            )}
                                                         </div>
                                                     );
-                                                default:
-                                                    return null;
+                                                }
+
+                                                // Tool result (when tool execution completes)
+                                                if (isToolResult) {
+                                                    return (
+                                                        <div
+                                                            key={`${message.id}-${i}`}
+                                                            className="my-2 p-4 rounded-lg bg-green-500/20 border-2 border-green-500/50 backdrop-blur-sm shadow-md"
+                                                        >
+                                                            <div className="flex items-center gap-2 mb-2">
+                                                                <CheckCircle2 className="w-4 h-4 text-green-400" />
+                                                                <span className="font-semibold text-green-300">Tool result:</span>
+                                                                <span className="font-bold text-green-200">{toolName}</span>
+                                                            </div>
+                                                            {'output' in part && part.output !== undefined && (
+                                                                <div className="mt-2 pt-2 border-t border-green-500/30">
+                                                                    <div className="text-xs text-green-200/80 font-mono bg-green-950/30 p-2 rounded overflow-x-auto max-h-60 overflow-y-auto">
+                                                                        {typeof part.output === 'string'
+                                                                            ? part.output
+                                                                            : JSON.stringify(part.output, null, 2)
+                                                                        }
+                                                                    </div>
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    );
+                                                }
                                             }
+
+                                            return null;
                                         })}
                                     </div>
 
@@ -125,7 +188,7 @@ export function ChatInterface() {
                     </ScrollArea>
 
                     {/* Input Area */}
-                    <div className="pt-6 border-t border-border">
+                    <div className="pt-6 border-t border-border flex-shrink-0">
                         <form onSubmit={handleSubmit} className="relative flex items-center gap-3">
                             <Input
                                 value={input}
