@@ -40,10 +40,10 @@ export function ChatInterface() {
                 {/* Header Section */}
                 <header className="text-center mb-12 space-y-4 flex-shrink-0">
                     <h1 className="text-5xl md:text-6xl font-bold tracking-tight text-foreground">
-                        AI Assistant
+                        AI Engineering Assistant
                     </h1>
                     <p className="text-lg text-muted-foreground max-w-2xl mx-auto font-light">
-                        Your intelligent companion for code, design, and answers. Always here to help.
+                        Your intelligent companion for quotation tasks. Always here to help.
                     </p>
                 </header>
 
@@ -61,11 +61,11 @@ export function ChatInterface() {
                                             How can I help you today?
                                         </h2>
                                         <p className="text-muted-foreground font-light">
-                                            I can help you write code, design interfaces, or answer any questions you might have.
+                                            I can help you with quotation tasks.
                                         </p>
                                     </div>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3 w-full max-w-md mt-4">
-                                        {['Explain quantum computing', 'Write a Python script', 'Design a logo concept', 'Debug my code'].map((suggestion) => (
+                                        {['Explain quotation tasks', 'Calculate quotation', 'List materials', 'List machine groups', 'List quotation forms', 'List options'].map((suggestion) => (
                                             <button
                                                 key={suggestion}
                                                 onClick={() => {
