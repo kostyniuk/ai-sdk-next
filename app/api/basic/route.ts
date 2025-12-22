@@ -1,7 +1,7 @@
 import { google } from '@ai-sdk/google';
 import { generateObject, generateText } from 'ai';
 import { NextResponse } from 'next/server';
-import { z } from 'zod';
+import { z } from 'zod/v3';
 
 const schema = z.object({
     name: z.string().describe('The name of the recipe'),

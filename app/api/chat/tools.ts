@@ -1,8 +1,29 @@
 import { db } from "@/db";
 import { material, machineGroup, quotationForm, quotationFormOption, SelectMaterial, quotationFormFormula } from "@/db/schema";
 import { tool } from "ai";
-import { z } from "zod";    
+import { z } from 'zod/v3';    
 import { eq } from "drizzle-orm";
+
+const weatherTool = tool({
+  description: "Get the weather in a location",
+  inputSchema: z.object({
+    location: z.string().describe("The location to get the weather for"),
+  }),
+  execute: ({ location }) => ({
+    temperature: 72 + Math.floor(Math.random() * 21) - 10,
+  }),
+  // toModelOutput can be sync or async
+  toModelOutput: async ({ input, output, toolCallId }) => {
+    // many other options, including json, multi-part with files and images, etc.
+    // (support depends on provider)
+    // example: send tool output as a text
+    return {
+      type: "text",
+      value:
+        `The weather in ${input.location} is ${output.temperature}°F.`,
+    };
+  },
+});
 
 export const tools = {
     listMaterials: tool({
